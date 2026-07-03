@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Doctor DZ - نظام تسيير العيادات الطبية">
+  <title>Doctor DZ - تسجيل الدخول</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <style>
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      padding: 1rem;
+    }
+
+    .auth-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 450px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      animation: slideUp 0.5s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .auth-logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .auth-logo h1 {
+      color: #10b981;
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+
+    .auth-logo p {
+      color: #6b7280;
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .auth-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      background: #f3f4f6;
+      padding: 0.375rem;
+      border-radius: 8px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 0.75rem;
+      border: none;
+      background: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      color: #6b7280;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+    }
+
+    .auth-tab.active {
+      background: white;
+      color: #10b981;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .auth-form {
+      display: none;
+    }
+
+    .auth-form.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .auth-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+
+    .auth-footer a {
+      color: #10b981;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .form-divider {
+      text-align: center;
+      margin: 1.5rem 0;
+      position: relative;
+    }
+
+    .form-divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #e5e7eb;
+    }
+
+    .form-divider span {
+      background: white;
+      padding: 0 0.75rem;
+      color: #9ca3af;
+      position: relative;
+      font-size: 0.875rem;
+    }
+
+    .password-toggle {
+      position: relative;
+    }
+
+    .password-toggle-btn {
+      position: absolute;
+      inset-inline-end: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #6b7280;
+      font-size: 1.25rem;
+    }
+
+    .btn-link {
+      background: none;
+      border: none;
+      color: #10b981;
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: 600;
+      padding: 0;
+    }
+
+    .btn-link:hover {
+      text-decoration: underline;
+    }
+
+    .error-message {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      display: none;
+      border-left: 4px solid #ef4444;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .success-message {
+      background: #d1fae5;
+      color: #065f46;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      display: none;
+      border-left: 4px solid #10b981;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    .loading {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .privacy-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .privacy-modal.show {
+      display: flex;
+    }
+
+    .privacy-content {
+      background: white;
+      border-radius: 16px;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .privacy-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .privacy-header h2 {
+      margin: 0;
+      color: #10b981;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #6b7280;
+    }
+
+    .reset-form {
+      display: none;
+    }
+
+    .reset-form.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <h1>👨‍⚕️ Doctor DZ</h1>
+        <p>نظام تسيير العيادات الطبية</p>
+      </div>
+
+      <!-- Login Tab -->
+      <div class="auth-tabs" id="authTabs">
+        <button class="auth-tab active" onclick="switchTab(event, 'login')">تسجيل الدخول</button>
+        <button class="auth-tab" onclick="switchTab(event, 'register')">إنشاء حساب</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" class="auth-form active" onsubmit="handleLogin(event)">
+        <div class="error-message" id="login-error"></div>
+        
+        <div class="form-group">
+          <label for="login-email">البريد الإلكتروني</label>
+          <input type="email" id="login-email" placeholder="your@email.com" required>
+        </div>
+
+        <div class="form-group password-toggle">
+          <label for="login-password">كلمة المرور</label>
+          <input type="password" id="login-password" placeholder="••••••••" required>
+          <button type="button" class="password-toggle-btn" onclick="togglePassword('login-password')">👁️</button>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="login-btn">
+          تسجيل الدخول
+        </button>
+
+        <div style="text-align: center; margin-top: 1rem;">
+          <button type="button" class="btn-link" onclick="showResetForm(event)">نسيت كلمة المرور؟</button>
+        </div>
+      </form>
+
+      <!-- Reset Password Form -->
+      <form id="reset-form" class="reset-form" onsubmit="handlePasswordReset(event)">
+        <div class="error-message" id="reset-error"></div>
+        <div class="success-message" id="reset-success"></div>
+
+        <div class="form-group">
+          <label for="reset-email">البريد الإلكتروني</label>
+          <input type="email" id="reset-email" placeholder="your@email.com" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg">
+          إرسال رابط الاستعادة
+        </button>
+
+        <div style="text-align: center; margin-top: 1rem;">
+          <button type="button" class="btn-link" onclick="hideResetForm(event)">العودة للدخول</button>
+        </div>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" class="auth-form" onsubmit="handleRegister(event)">
+        <div class="error-message" id="register-error"></div>
+
+        <div class="form-group">
+          <label for="reg-name">الاسم الكامل</label>
+          <input type="text" id="reg-name" placeholder="د. أحمد محمد" required>
+        </div>
+
+        <div class="form-group">
+          <label for="reg-clinic">اسم العيادة</label>
+          <input type="text" id="reg-clinic" placeholder="عيادة الأمل">
+        </div>
+
+        <div class="form-group">
+          <label for="reg-email">البريد الإلكتروني</label>
+          <input type="email" id="reg-email" placeholder="your@email.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="reg-phone">رقم الهاتف</label>
+          <input type="tel" id="reg-phone" placeholder="0550123456" pattern="[0-9\+\-\s()]*">
+        </div>
+
+        <div class="form-group password-toggle">
+          <label for="reg-password">كلمة المرور</label>
+          <input type="password" id="reg-password" placeholder="••••••••" minlength="6" required>
+          <button type="button" class="password-toggle-btn" onclick="togglePassword('reg-password')">👁️</button>
+        </div>
+
+        <div class="form-group password-toggle">
+          <label for="reg-confirm">تأكيد كلمة المرور</label>
+          <input type="password" id="reg-confirm" placeholder="••••••••" minlength="6" required>
+          <button type="button" class="password-toggle-btn" onclick="togglePassword('reg-confirm')">👁️</button>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="register-btn">
+          إنشاء الحساب
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <p>
+          بتسجيلك، أنت توافق على 
+          <button type="button" class="btn-link" onclick="showPrivacyPolicy()">سياسة الخصوصية</button>
+          و
+          <button type="button" class="btn-link" onclick="showTerms()">شروط الاستخدام</button>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Privacy Policy Modal -->
+  <div id="privacy-modal" class="privacy-modal">
+    <div class="privacy-content">
+      <div class="privacy-header">
+        <h2>سياسة الخصوصية</h2>
+        <button type="button" class="close-btn" onclick="closePrivacyPolicy()">×</button>
+      </div>
+      <div id="privacy-text">
+        <h3>سياسة حماية البيانات الشخصية</h3>
+        <p>
+          تقر Doctor DZ بأهمية خصوصيتك وحماية بيانات المريض والطبيب. نحن ملتزمون بالامتثال لقوانين حماية البيانات الدولية.
+        </p>
+
+        <h4>1. البيانات التي نجمعها:</h4>
+        <ul>
+          <li>بيانات الدخول (البريد الإلكتروني وكلمة المرور)</li>
+          <li>بيانات العيادة (الاسم، العنوان، أرقام التواصل)</li>
+          <li>بيانات المرضى الطبية</li>
+          <li>السجلات المالية والمواعيد</li>
+        </ul>
+
+        <h4>2. كيف نستخدم بيانات:</h4>
+        <ul>
+          <li>لتقديم خدمات إدارة العيادة</li>
+          <li>لتحسين الخدمات والتطبيق</li>
+          <li>للامتثال للقوانين المحلية والدولية</li>
+        </ul>
+
+        <h4>3. حماية البيانات:</h4>
+        <ul>
+          <li>جميع البيانات مشفرة باستخدام AES-256</li>
+          <li>تخزين آمن على Firebase Cloud</li>
+          <li>لا نشارك البيانات مع جهات خارجية بدون موافقتك</li>
+        </ul>
+
+        <h4>4. حقوقك:</h4>
+        <ul>
+          <li>الحق في الوصول إلى بيانتك</li>
+          <li>الحق في تصحيح البيانات</li>
+          <li>الحق في حذف الحساب والبيانات</li>
+        </ul>
+
+        <h4>5. التواصل:</h4>
+        <p>لأي استفسارات بخصوص الخصوصية: privacy@doctor-dz.com</p>
+      </div>
+      <button type="button" class="btn btn-primary btn-block" onclick="closePrivacyPolicy()" style="margin-top: 1.5rem;">
+        أوافق
+      </button>
+    </div>
+  </div>
+
+  <!-- Terms Modal -->
+  <div id="terms-modal" class="privacy-modal">
+    <div class="privacy-content">
+      <div class="privacy-header">
+        <h2>شروط الاستخدام</h2>
+        <button type="button" class="close-btn" onclick="closeTerms()">×</button>
+      </div>
+      <div id="terms-text">
+        <h3>شروط استخدام Doctor DZ</h3>
+        <p>
+          بتسجيلك واستخدامك لخدمات Doctor DZ، أنت توافق على هذه الشروط بالكامل.
+        </p>
+
+        <h4>1. الاستخدام المقبول:</h4>
+        <ul>
+          <li>استخدام التطبيق لإدارة العيادة الطبية بشكل قانوني</li>
+          <li>عدم استخدام التطبيق لأغراض غير قانونية</li>
+          <li>عدم مشاركة بيانات الدخول مع أشخاص آخرين</li>
+        </ul>
+
+        <h4>2. المسؤولية:</h4>
+        <ul>
+          <li>أنت مسؤول عن دقة البيانات التي تدخلها</li>
+          <li>Doctor DZ غير مسؤول عن فقدان البيانات بسبب إهمال المستخدم</li>
+        </ul>
+
+        <h4>3. الخدمات:</h4>
+        <ul>
+          <li>Doctor DZ توفر الخدمات على أساس "كما هي"</li>
+          <li>قد تتغير الميزات والخدمات دون إشعار مسبق</li>
+          <li>نحتفظ بالحق في إيقاف أي حساب ينتهك الشروط</li>
+        </ul>
+
+        <h4>4. الرسوم:</h4>
+        <ul>
+          <li>الخطة التجريبية: مجانية لمدة 15 يوماً</li>
+          <li>الخطط المدفوعة: وفقاً لما هو محدد في الموقع</li>
+          <li>لا استرجاع للرسوم المدفوعة</li>
+        </ul>
+      </div>
+      <button type="button" class="btn btn-primary btn-block" onclick="closeTerms()" style="margin-top: 1.5rem;">
+        أوافق
+      </button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { login, registerDoctor, resetPassword } from './js/auth.js';
+    import { showToast } from './js/utils.js';
+
+    // Tab Switching
+    window.switchTab = (e, tab) => {
+      e.preventDefault();
+      
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+      document.getElementById('reset-form').classList.remove('show');
+      
+      e.target.classList.add('active');
+      document.getElementById(`${tab}-form`).classList.add('active');
+    };
+
+    // Password Visibility Toggle
+    window.togglePassword = (inputId) => {
+      const input = document.getElementById(inputId);
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+    };
+
+    // Login Handler
+    window.handleLogin = async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const btn = document.getElementById('login-btn');
+      const errorDiv = document.getElementById('login-error');
+
+      try {
+        btn.disabled = true;
+        btn.textContent = 'جاري التحميل...';
+        errorDiv.classList.remove('show');
+
+        const result = await login(email, password);
+        
+        if (result.success) {
+          showToast('تم تسجيل الدخول بنجاح', 'success');
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 500);
+        } else {
+          errorDiv.textContent = result.error || 'فشل تسجيل الدخول';
+          errorDiv.classList.add('show');
+        }
+      } catch (error) {
+        errorDiv.textContent = error.message || 'حدث خطأ. حاول مجدداً.';
+        errorDiv.classList.add('show');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'تسجيل الدخول';
+      }
+    };
+
+    // Register Handler
+    window.handleRegister = async (e) => {
+      e.preventDefault();
+      
+      const password = document.getElementById('reg-password').value;
+      const confirm = document.getElementById('reg-confirm').value;
+      const errorDiv = document.getElementById('register-error');
+
+      if (password !== confirm) {
+        errorDiv.textContent = 'كلمات المرور غير متطابقة';
+        errorDiv.classList.add('show');
+        return;
+      }
+
+      const data = {
+        email: document.getElementById('reg-email').value,
+        password: document.getElementById('reg-password').value,
+        fullName: document.getElementById('reg-name').value,
+        clinicName: document.getElementById('reg-clinic').value,
+        phone: document.getElementById('reg-phone').value
+      };
+
+      const btn = document.getElementById('register-btn');
+
+      try {
+        btn.disabled = true;
+        btn.textContent = 'جاري الإنشاء...';
+        errorDiv.classList.remove('show');
+
+        const result = await registerDoctor(data.email, data.password, data.fullName, data.clinicName, data.phone);
+        
+        if (result.success) {
+          showToast('تم إنشاء الحساب بنجاح', 'success');
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 500);
+        } else {
+          errorDiv.textContent = result.error || 'فشل إنشاء الحساب';
+          errorDiv.classList.add('show');
+        }
+      } catch (error) {
+        errorDiv.textContent = error.message || 'حدث خطأ. حاول مجدداً.';
+        errorDiv.classList.add('show');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'إنشاء الحساب';
+      }
+    };
+
+    // Password Reset
+    window.showResetForm = (e) => {
+      e.preventDefault();
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('reset-form').classList.add('show');
+    };
+
+    window.hideResetForm = (e) => {
+      e.preventDefault();
+      document.getElementById('login-form').style.display = 'block';
+      document.getElementById('reset-form').classList.remove('show');
+    };
+
+    window.handlePasswordReset = async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('reset-email').value;
+      const errorDiv = document.getElementById('reset-error');
+      const successDiv = document.getElementById('reset-success');
+
+      try {
+        errorDiv.classList.remove('show');
+        successDiv.classList.remove('show');
+
+        const result = await resetPassword(email);
+        
+        if (result.success) {
+          successDiv.textContent = 'تم إرسال رابط الاستعادة إلى بريدك الإلكتروني';
+          successDiv.classList.add('show');
+          document.getElementById('reset-email').value = '';
+        } else {
+          errorDiv.textContent = result.error || 'فشل إرسال الرابط';
+          errorDiv.classList.add('show');
+        }
+      } catch (error) {
+        errorDiv.textContent = error.message || 'حدث خطأ. حاول مجدداً.';
+        errorDiv.classList.add('show');
+      }
+    };
+
+    // Privacy Policy
+    window.showPrivacyPolicy = () => {
+      document.getElementById('privacy-modal').classList.add('show');
+    };
+
+    window.closePrivacyPolicy = () => {
+      document.getElementById('privacy-modal').classList.remove('show');
+    };
+
+    // Terms
+    window.showTerms = () => {
+      document.getElementById('terms-modal').classList.add('show');
+    };
+
+    window.closeTerms = () => {
+      document.getElementById('terms-modal').classList.remove('show');
+    };
+
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(err => {
+        console.log('SW registration failed:', err);
+      });
+    }
+  </script>
+</body>
+</html>
